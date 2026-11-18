@@ -1,0 +1,25 @@
+# Dependencies / build output
+node_modules/
+frontend/dist/
+backend/__pycache__/
+backend/app/__pycache__/
+.venv/
+venv/
+*.pyc
+
+# Secrets — NEVER commit
+.env
+backend/.env
+*.key
+*.pem
+
+# Temporary video storage (contains user videos)
+backend/storage/
+storage/
+cleanframe_data/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+frontend/cleanframe-dist.zip

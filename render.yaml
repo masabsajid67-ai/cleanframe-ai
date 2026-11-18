@@ -1,0 +1,38 @@
+# Render Blueprint — CLEANFRAME AI backend (FastAPI + FFmpeg + OCR).
+# Deploy: Render dashboard → New → Blueprint → connect this repo.
+# Free plan: spins down after ~15 min idle (first request is slow), 512 MB RAM.
+# No secrets are needed until the ProPainter GPU is connected (see GPU.md).
+services:
+  - type: web
+    name: cleanframe-ai-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    healthCheckPath: /api/health
+    envVars:
+      - key: FRONTEND_ORIGINS
+        value: https://cleanframe-ai-app.netlify.app
+      - key: RETENTION_HOURS
+        value: "24"
+      - key: CLEANUP_INTERVAL_SECONDS
+        value: "600"
+      - key: MAX_UPLOAD_MB
+        value: "500"
+      - key: OCR_ENGINE
+        value: auto
+      - key: DETECT_FPS
+        value: "1.0"
+      - key: MAX_DETECT_FRAMES
+        value: "90"
+      - key: OCR_MIN_CONFIDENCE
+        value: "0.45"
+      - key: REVIEW_CONFIDENCE
+        value: "0.65"
+      - key: DEFAULT_ENGINE
+        value: cpu
+      - key: VIDEO_CRF
+        value: "18"
+      - key: CLEANFRAME_STORAGE_DIR
+        value: /data

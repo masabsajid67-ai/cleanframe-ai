@@ -1,0 +1,27 @@
+# GPU image for the ProPainter worker (RunPod serverless).
+# Build on a machine with Docker; push to a registry; point a RunPod
+# Serverless endpoint at it. Never build/run this on the CPU backend.
+FROM nvidia/cuda:12.4.1-cudnn-runtime-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive \
+    PROPINTER_DIR=/opt/ProPainter \
+    PYTHONUNBUFFERED=1
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-pip git ffmpeg libgl1 wget \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /opt
+RUN git clone https://github.com/sczhou/ProPainter.git ProPainter
+WORKDIR /opt/ProPainter
+RUN pip install --no-cache-dir torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu124 \
+    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir runpod opencv-python-headless "numpy>=1.26,<2"
+# Download ProPainter weights (see the repo README for current links).
+# The official release hosts them on Google Drive / Hugging Face; pin the
+# exact URLs in your own fork and verify checksums before deploying.
+# RUN python3 -c "from huggingface_hub import snapshot_download; snapshot_download('...')"
+
+COPY propainter_worker.py /opt/worker/propainter_worker.py
+WORKDIR /opt/worker
+CMD ["python3", "propainter_worker.py"]

@@ -1,0 +1,5 @@
+# Only needed on a GPU machine running ProPainter locally (PROPINTER_MODE=local).
+# Install inside the ProPainter checkout instead of this backend when possible.
+# See GPU.md for the RunPod path, which needs no GPU packages here.
+torch==2.5.1
+torchvision==0.20.1
